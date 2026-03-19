@@ -144,9 +144,16 @@ def main():
     dd_age = load_primary_nhanes()
     dd_age = load_extended_nhanes(dd_age)
 
+    # Filter out children (age < 18) before imputation — MCQ questionnaire
+    # fields are 100% null for children, and mean-imputing them produces
+    # meaningless predictions.
+    n_before = len(dd_age)
+    dd_age = dd_age[dd_age["RIDAGEYR"] >= 18].copy()
+    print(f"\nFiltered to adults (age >= 18): {n_before} -> {len(dd_age)} records")
+
     dd_age = dd_age.fillna(dd_age.mean())
 
-    print(f"\nFinal dataset: {dd_age.shape[0]} records, {dd_age.shape[1]} columns")
+    print(f"Final dataset: {dd_age.shape[0]} records, {dd_age.shape[1]} columns")
     print(f"Age range: {dd_age['RIDAGEYR'].min():.0f} - {dd_age['RIDAGEYR'].max():.0f}")
     print(f"Mean age: {dd_age['RIDAGEYR'].mean():.1f}")
 

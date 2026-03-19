@@ -44,35 +44,89 @@ Model weights and the NHANES validation dataset are hosted on the [Hugging Face 
 - `pip install -e ".[survival]"` — adds lifelines (for Kaplan-Meier, Cox PH)
 - `pip install -e ".[neural]"` — adds PyTorch (experimental model)
 
+### Biomarker names (friendly keys)
+
+`predict_age` and `HealomeClock.predict` accept **canonical snake_case names** (recommended) or the original **NHANES variable codes** (e.g. `LBXGH`). Common synonyms work too (e.g. `hba1c_percent` → glycohemoglobin). See `healome_clock.feature_aliases` and `NHANES_TO_CANONICAL_KEY` in code for the full map.
+
+**Questionnaire (NHANES MCQ) fields** use `1 = Yes`, `2 = No` for the six history items below, matching how the model was trained.
+
+### Example — standard model (21 features)
+
 ```python
 from healome_clock import predict_age
 
 result = predict_age({
-    "LBXGH": 5.4,       # Glycohemoglobin (HbA1c)
-    "LBXSGL": 95,       # Glucose
-    "LBXSCR": 0.80,     # Creatinine
-    "LBXRBCSI": 4.52,   # Red blood cell count
-    "LBXPLTSI": 245,    # Platelet count
-    "LBXMCVSI": 93,     # Mean cell volume
-    "LBXRDW": 12.8,     # Red cell distribution width
-    "LBXLYPCT": 28.5,   # Lymphocyte %
-    "LBDLYMNO": 2.1,    # Lymphocyte count
-    "LBXMOPCT": 6.2,    # Monocyte %
-    "LBXSATSI": 22,     # ALT
-    "LBXSAPSI": 68,     # ALP
-    "LBXSLDSI": 138,    # LDH
-    "LBXSCK": 132,      # CPK
-    "LBXSBU": 15,       # BUN
-    "LBXSKSI": 4.0,     # Potassium
-    "MCQ220": 2,         # Cancer history (2=No)
-    "MCQ160D": 2,        # Angina history (2=No)
-    "MCQ160A": 2,        # Arthritis history (2=No)
-    "MCQ500": 2,         # Liver condition (2=No)
-    "MCQ550": 2,         # Gallstones (2=No)
-}, chronological_age=45)
+    "mean_cell_volume_fl": 93,                      # MCV, fL
+    "glycohemoglobin_percent": 5.4,                 # HbA1c, % (glycated hemoglobin)
+    "alt_iu_l": 22,                                 # ALT, IU/L
+    "rbc_count_million_per_ul": 4.52,               # RBC, million cells/µL
+    "ever_cancer_or_malignancy": 2,                 # 1=Yes, 2=No
+    "platelet_count_thousand_per_ul": 245,          # platelets, 1000 cells/µL
+    "ldh_iu_l": 138,                                # LDH, IU/L
+    "ever_angina": 2,                               # 1=Yes, 2=No
+    "lymphocyte_percent": 28.5,                     # % of WBCs
+    "lymphocyte_count_thousand_per_ul": 2.1,        # 1000 cells/µL
+    "cpk_iu_l": 132,                                # CPK, IU/L
+    "creatinine_mg_dl": 0.80,                       # mg/dL
+    "ever_arthritis": 2,                            # 1=Yes, 2=No
+    "alp_iu_l": 68,                                 # alkaline phosphatase, IU/L
+    "ever_liver_condition": 2,                      # 1=Yes, 2=No
+    "potassium_mmol_l": 4.0,                        # mmol/L
+    "rdw_percent": 12.8,                            # RDW, %
+    "monocyte_percent": 6.2,                        # % of WBCs
+    "bun_mg_dl": 15,                                # BUN, mg/dL
+    "ever_gallstones": 2,                          # 1=Yes, 2=No
+    "glucose_mg_dl": 95,                            # mg/dL
+}, chronological_age=45, variant="standard")
 
 print(result.summary())
 ```
+
+### Example — extended model (35 features)
+
+```python
+result = predict_age({
+    "mean_cell_volume_fl": 93,                      # MCV, fL
+    "hemoglobin_g_dl": 14.2,                        # g/dL
+    "hematocrit_percent": 42.1,                     # %
+    "alt_iu_l": 22,                                 # IU/L
+    "rbc_count_million_per_ul": 4.52,               # million cells/µL
+    "wbc_count_thousand_per_ul": 6.1,               # 1000 cells/µL
+    "platelet_count_thousand_per_ul": 245,          # 1000 cells/µL
+    "ldh_iu_l": 138,                                # IU/L
+    "ever_angina": 2,                               # 1=Yes, 2=No
+    "lymphocyte_percent": 28.5,                     # % of WBCs
+    "ast_iu_l": 24,                                 # IU/L
+    "lymphocyte_count_thousand_per_ul": 2.1,        # 1000 cells/µL
+    "cpk_iu_l": 132,                                # IU/L
+    "total_bilirubin_mg_dl": 0.8,                   # mg/dL
+    "ever_arthritis": 2,                            # 1=Yes, 2=No
+    "alp_iu_l": 68,                                 # IU/L
+    "calcium_mg_dl": 9.5,                           # mg/dL
+    "bun_mg_dl": 15,                                # mg/dL
+    "ever_gallstones": 2,                           # 1=Yes, 2=No
+    "glucose_mg_dl": 95,                            # mg/dL
+    "chloride_mmol_l": 102,                         # mmol/L
+    "ldl_cholesterol_mg_dl": 110,                   # mg/dL (Martin–Hopkins)
+    "glycohemoglobin_percent": 5.4,                 # %
+    "hdl_cholesterol_mg_dl": 55,                    # mg/dL (direct HDL)
+    "ever_cancer_or_malignancy": 2,                 # 1=Yes, 2=No
+    "triglycerides_mg_dl": 90,                      # mg/dL
+    "total_protein_g_dl": 7.0,                      # g/dL
+    "creatinine_mg_dl": 0.80,                       # mg/dL
+    "ever_liver_condition": 2,                      # 1=Yes, 2=No
+    "potassium_mmol_l": 4.0,                        # mmol/L
+    "bicarbonate_mmol_l": 25,                       # mmol/L
+    "osmolality_mmol_kg": 280,                      # mmol/kg
+    "rdw_percent": 12.8,                            # %
+    "monocyte_percent": 6.2,                        # % of WBCs
+    "sodium_mmol_l": 140,                           # mmol/L
+}, chronological_age=45, variant="extended")
+
+print(result.summary())
+```
+
+CSV/JSON column names can use these same friendly keys (or NHANES codes).
 
 [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/healome/healome-aging-clock/blob/main/notebooks/demo.ipynb)
 
@@ -84,6 +138,8 @@ print(result.summary())
 | **Extended** | 35 (expanded lab panel) | 6.07 years | 0.873 | 0.934 |
 
 Both models: GradientBoosting trained on ~50K NHANES records (2003-2020), validated with Cox PH survival analysis (concordance = 0.99).
+
+Use **standard** for routine panels (21 inputs) or **extended** when you have the larger lipid/liver/electrolyte set (35 inputs). Pass biomarkers as **canonical friendly names** (see examples above) or NHANES codes.
 
 Models load from `healome_clock/models/weights/` (standard_21feat.joblib, extended_35feat.joblib). If the files are missing, the library will try to download them from the Hub; otherwise see [Downloading model weights and validation data](#downloading-model-weights-and-validation-data) below.
 

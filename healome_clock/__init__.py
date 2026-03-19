@@ -8,13 +8,18 @@ Two variants:
 
 Usage:
     from healome_clock import predict_age
-    result = predict_age({"LBXGH": 5.4, "LBXSGL": 95, ...}, chronological_age=45)
+    result = predict_age({"glycohemoglobin_percent": 5.4, "glucose_mg_dl": 95, ...}, chronological_age=45)
     print(result.summary())
 """
 
 __version__ = "0.1.0"
 
 from healome_clock.inference import predict_age, HealomeClock, AgeResult
+from healome_clock.feature_aliases import (
+    NHANES_TO_CANONICAL_KEY,
+    normalize_blood_panel_to_nhanes,
+    list_friendly_features_for_variant,
+)
 from healome_clock.models.tree import (
     TreeModel,
     STANDARD_21_FEATURES,
@@ -30,4 +35,7 @@ __all__ = [
     "STANDARD_21_FEATURES",
     "EXTENDED_35_FEATURES",
     "FEATURE_NAMES",
+    "NHANES_TO_CANONICAL_KEY",
+    "normalize_blood_panel_to_nhanes",
+    "list_friendly_features_for_variant",
 ]

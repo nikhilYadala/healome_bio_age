@@ -8,6 +8,70 @@ import pandas as pd
 from pathlib import Path
 
 
+class TestFeatureAliases:
+    def test_friendly_dict_maps_to_nhanes_standard(self):
+        from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
+        from healome_clock.models.tree import STANDARD_21_FEATURES
+
+        out = normalize_blood_panel_to_nhanes(
+            {"glycohemoglobin_percent": 5.4, "glucose_mg_dl": 95},
+            "standard",
+        )
+        assert out["LBXGH"] == 5.4
+        assert out["LBXSGL"] == 95
+        assert set(out.keys()) <= set(STANDARD_21_FEATURES)
+
+    def test_unknown_dict_key_warns(self):
+        from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
+
+        with pytest.warns(UserWarning, match="Ignoring unknown"):
+            out = normalize_blood_panel_to_nhanes(
+                {"glycohemoglobin_percent": 5.4, "not_a_real_marker": 1},
+                "standard",
+            )
+        assert "LBXGH" in out
+        assert "not_a_real_marker" not in out
+
+    def test_nhanes_codes_passthrough(self):
+        from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
+
+        out = normalize_blood_panel_to_nhanes({"LBXGH": 5.4, "LBXSGL": 95}, "standard")
+        assert out == {"LBXGH": 5.4, "LBXSGL": 95}
+
+    def test_synonym_hba1c(self):
+        from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
+
+        out = normalize_blood_panel_to_nhanes({"hba1c_percent": 5.4}, "standard")
+        assert out["LBXGH"] == 5.4
+
+    def test_dataframe_rename(self):
+        from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
+
+        df = pd.DataFrame([{"glycohemoglobin_percent": 5.4, "glucose_mg_dl": 95}])
+        out = normalize_blood_panel_to_nhanes(df, "standard")
+        assert "LBXGH" in out.columns
+        assert "LBXSGL" in out.columns
+        assert float(out["LBXGH"].iloc[0]) == 5.4
+
+    def test_conflicting_duplicate_raises(self):
+        from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
+
+        with pytest.raises(ValueError, match="Conflicting"):
+            normalize_blood_panel_to_nhanes(
+                {"LBXGH": 5.0, "glycohemoglobin_percent": 6.0},
+                "standard",
+            )
+
+    def test_list_friendly_features_order_matches_model(self):
+        from healome_clock.feature_aliases import list_friendly_features_for_variant
+        from healome_clock.models.tree import STANDARD_21_FEATURES, EXTENDED_35_FEATURES
+
+        std = list_friendly_features_for_variant("standard")
+        assert [row[1] for row in std] == STANDARD_21_FEATURES
+        ext = list_friendly_features_for_variant("extended")
+        assert [row[1] for row in ext] == EXTENDED_35_FEATURES
+
+
 class TestFeatureConstants:
     def test_standard_feature_count(self):
         from healome_clock.models.tree import STANDARD_21_FEATURES

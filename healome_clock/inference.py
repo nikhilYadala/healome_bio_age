@@ -11,6 +11,7 @@ from typing import Union, Optional, Dict
 from pathlib import Path
 from dataclasses import dataclass, field
 
+from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
 from healome_clock.models.tree import (
     TreeModel,
     STANDARD_21_FEATURES,
@@ -62,7 +63,7 @@ class HealomeClock:
 
     Example:
         >>> clock = HealomeClock(variant="standard")
-        >>> result = clock.predict({"LBXGH": 5.4, "LBXSGL": 95, ...}, chronological_age=45)
+        >>> result = clock.predict({"glycohemoglobin_percent": 5.4, "glucose_mg_dl": 95, ...}, chronological_age=45)
         >>> print(result.biological_age)
     """
 
@@ -92,15 +93,17 @@ class HealomeClock:
 
         Args:
             blood_panel: CSV/JSON path, DataFrame, or dict of biomarker values.
+                Use canonical snake_case names (see README) or original NHANES codes.
             chronological_age: If provided, computes delta and acceleration classification.
 
         Returns:
             AgeResult for single sample, list of AgeResult for multiple.
         """
         if isinstance(blood_panel, dict):
-            df = pd.DataFrame([blood_panel])
+            normalized = normalize_blood_panel_to_nhanes(blood_panel, self.variant)
+            df = pd.DataFrame([normalized])
         elif isinstance(blood_panel, pd.DataFrame):
-            df = blood_panel.copy()
+            df = normalize_blood_panel_to_nhanes(blood_panel.copy(), self.variant)
         else:
             path = Path(blood_panel)
             if path.suffix.lower() == ".csv":
@@ -109,6 +112,7 @@ class HealomeClock:
                 df = pd.read_json(path)
             else:
                 raise ValueError(f"Unsupported file format: {path.suffix}")
+            df = normalize_blood_panel_to_nhanes(df, self.variant)
 
         preds = self._tree.predict(df)
 
@@ -163,6 +167,7 @@ def predict_age(
 
     Args:
         blood_panel: Blood panel data (CSV path, DataFrame, or dict).
+            Keys may be canonical friendly names or NHANES codes (see README).
         chronological_age: Optional chronological age for delta computation.
         variant: "standard" (21 features) or "extended" (35 features).
         model_path: Override path to model weights.
@@ -172,7 +177,7 @@ def predict_age(
 
     Example:
         >>> from healome_clock import predict_age
-        >>> result = predict_age({"LBXGH": 5.4, "LBXSGL": 95, ...})
+        >>> result = predict_age({"glycohemoglobin_percent": 5.4, "glucose_mg_dl": 95, ...})
         >>> print(result.biological_age)
     """
     global _default_clock

@@ -242,8 +242,11 @@ class TreeModel:
         return self.model.predict(x)
 
     def predict_single(self, biomarkers: Dict[str, float]) -> float:
-        """Predict biological age from a dict of biomarker values."""
-        df = pd.DataFrame([biomarkers])
+        """Predict biological age from a dict of biomarker values (NHANES codes or friendly names)."""
+        from healome_clock.feature_aliases import normalize_blood_panel_to_nhanes
+
+        normalized = normalize_blood_panel_to_nhanes(biomarkers, self.variant)
+        df = pd.DataFrame([normalized])
         return float(self.predict(df)[0])
 
     def feature_importances(self) -> pd.DataFrame:
