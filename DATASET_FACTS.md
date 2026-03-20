@@ -1,6 +1,6 @@
 # Dataset Facts
 
-## Section 1: Public Training Dataset (NHANES)
+## Section 1: Public Training Dataset
 
 | Field | Value |
 |-------|-------|
