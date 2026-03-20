@@ -26,8 +26,8 @@ Evaluate whether your biological age predictions are associated with mortality.
 
 | Model | Features | MAE | R² | Concordance |
 |-------|----------|-----|-----|-------------|
-| Healome Standard | 21 | 5.11 | 0.906 | 0.99 |
-| Healome Extended | 35 | 6.07 | 0.873 | 0.99 |
+| Healome Standard | 21 | 5.11 | 0.906 | 0.81 |
+| Healome Extended | 35 | 6.07 | 0.873 | 0.83 |
 
 ## How to Submit
 

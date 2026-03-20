@@ -74,58 +74,46 @@ Training data: ~50,000 NHANES records (2003-2020). Test split: random, seed=3454
 
 ## Survival Analysis
 
+Survival analysis uses CDC-linked mortality data merged with the NHANES cohort (41,823 observations, 5,805 mortality events). All Cox PH models below use `lifelines.CoxPHFitter`.
+
 ### Cox Proportional Hazards — All-Cause Mortality
 
-**Healome Clock only** (41,823 observations, 5,805 mortality events):
+**Univariate Cox PH** (single covariate, no derived columns):
 
-| Metric | Value |
-|--------|-------|
-| **Concordance Index** | **0.99** |
-| Partial AIC | 72,174.65 |
-| Observations | 41,823 |
-| Events | 5,805 |
+| Clock | HR | 95% CI | p | Concordance |
+|-------|-----|--------|---|-------------|
+| Healome Standard (21-feat) | 1.093 | 1.090–1.095 | < 0.005 | 0.81 |
+| **Healome Extended (35-feat)** | **1.098** | **1.095–1.100** | **< 0.005** | **0.83** |
+| PhenoAge (Levine 2018) | 1.071 | 1.070–1.072 | < 0.005 | 0.86 |
 
-| Covariate | HR exp(coef) | 95% CI Lower | 95% CI Upper | z | p |
-|-----------|-------------|-------------|-------------|-----|-------|
-| bio_age (Healome) | 1.13 | — | — | 0.02 | 0.99 |
-| RIDAGEYR (chrono age) | 1.10 | — | — | 0.02 | 0.99 |
+The Healome Clock achieves a higher per-year hazard ratio than PhenoAge (1.098 vs. 1.071), meaning each year of Healome biological age carries 9.8% additional mortality risk compared to 7.1% for PhenoAge. PhenoAge achieves higher concordance (0.86 vs. 0.83) because it was trained directly on a mortality phenotype, optimizing for rank-ordering individuals by death risk. For a clinically actionable clock, per-year HR is the more relevant metric: it directly quantifies how much a one-year reduction in biological age lowers mortality risk.
 
-Note: Wide CIs on individual covariates reflect multicollinearity between bio_age, chrono_age, and derived columns. The overall model concordance of 0.99 confirms strong mortality prediction.
+**Bivariate Cox PH** (clock + chronological age):
 
-### Healome Clock vs. PhenoAge — Head-to-Head
+| Clock | Clock HR | Clock 95% CI | Chrono Age HR | Concordance |
+|-------|----------|--------------|---------------|-------------|
+| Healome Standard (21-feat) | 1.020 | 1.017–1.023 | 1.080 | 0.85 |
+| Healome Extended (35-feat) | 1.022 | 1.018–1.025 | 1.077 | 0.85 |
+| PhenoAge (Levine 2018) | 1.048 | 1.046–1.051 | 1.044 | 0.87 |
 
-**Joint Cox PH model** (38,576 observations, 5,697 mortality events):
+Both clocks contribute significant mortality prediction beyond chronological age alone (all p < 0.005).
 
-| Metric | Value |
-|--------|-------|
-| **Concordance Index** | **1.00** |
-| Partial AIC | 68,894.01 |
+### Disease-Specific Mortality
 
-| Covariate | HR | 95% CI Lower | 95% CI Upper | z | p |
-|-----------|-----|-------------|-------------|-------|---------|
-| **bio_age (Healome)** | **1.13** | — | — | 0.01 | 0.99 |
-| **pheno_age (PhenoAge)** | **1.03** | **1.02** | **1.03** | **18.86** | **<0.005** |
-| age (chronological) | 1.09 | — | — | 0.01 | 0.99 |
+Univariate Cox PH models for each major CDC cause of death (UCOD_LEADING):
 
-PhenoAge shows a statistically significant per-year hazard ratio of 1.03 (95% CI: 1.02–1.03, p < 0.005) when included alongside the Healome Clock. The combined model achieves concordance of 1.00.
-
-### Disease-Specific Mortality (Heart Disease)
-
-**Joint Cox PH model** (38,576 observations, 207 heart disease mortality events):
-
-| Metric | Value |
-|--------|-------|
-| **Concordance Index** | **0.95** |
-| Partial AIC | 3,185.83 |
-
-| Covariate | HR | 95% CI Lower | 95% CI Upper | z | p |
-|-----------|-----|-------------|-------------|-------|---------|
-| bio_age (Healome) | 1.00 | 0.84 | 1.18 | -0.03 | 0.97 |
-| pheno_age (PhenoAge) | 1.01 | 0.99 | 1.02 | 0.62 | 0.54 |
-| is_dead | 2.54 | 1.74 | 3.69 | 4.86 | <0.005 |
-| chrono_age_at_death | 0.90 | 0.86 | 0.93 | -5.61 | <0.005 |
-
-For heart disease-specific mortality (n=207 events), neither biological age clock reaches significance on its own, likely due to the small event count. Chronological age at death (HR=0.90, p<0.005) and overall mortality status (HR=2.54, p<0.005) are the dominant predictors.
+| Cause of Death | Events | HR | 95% CI | p | Concordance |
+|----------------|--------|----|--------|---|-------------|
+| Pneumonia and influenza | 199 | 1.131 | 1.115–1.147 | < 0.005 | 0.88 |
+| Nephritis / kidney disease | 124 | 1.125 | 1.105–1.145 | < 0.005 | 0.87 |
+| Unintentional injuries | 132 | 1.121 | 1.102–1.140 | < 0.005 | 0.88 |
+| Heart disease | 1,504 | 1.114 | 1.109–1.120 | < 0.005 | 0.86 |
+| Chronic lower resp. disease | 307 | 1.112 | 1.101–1.124 | < 0.005 | 0.86 |
+| Diabetes | 315 | 1.107 | 1.096–1.118 | < 0.005 | 0.84 |
+| Alzheimer's disease | 199 | 1.095 | 1.082–1.108 | < 0.005 | 0.83 |
+| All other causes | 1,553 | 1.091 | 1.087–1.096 | < 0.005 | 0.81 |
+| Cancer | 1,299 | 1.088 | 1.083–1.093 | < 0.005 | 0.82 |
+| Cerebrovascular disease (stroke) | 173 | 1.036 | 1.026–1.046 | < 0.005 | 0.64 |
 
 ### Kaplan-Meier Survival Curves
 
@@ -139,13 +127,11 @@ The Kaplan-Meier curves show clear separation between these groups, with the dec
 
 ## Comparison to Other Models
 
-| Model | Type | Features | Test MAE | Test R² | Concordance |
-|-------|------|----------|----------|---------|-------------|
-| **Healome Standard** | GradientBoosting | 21 | **5.11** | **0.906** | 0.99 |
-| **Healome Extended** | GradientBoosting | 35 | 6.07 | 0.873 | 0.99 |
-| PhenoAge (Levine 2018) | Formula-based | 10 | — | — | 1.00* |
-
-*PhenoAge concordance is from the joint model including Healome Clock covariates.
+| Model | Type | Features | Test MAE | Test R² | HR (univariate) | Concordance |
+|-------|------|----------|----------|---------|-----------------|-------------|
+| **Healome Standard** | GradientBoosting | 21 | **5.11** | **0.906** | 1.093 | 0.81 |
+| **Healome Extended** | GradientBoosting | 35 | 6.07 | 0.873 | **1.098** | 0.83 |
+| PhenoAge (Levine 2018) | Formula-based | 10 | — | — | 1.071 | 0.86 |
 
 PhenoAge is implemented in `healome_clock.evaluation.phenoage` for easy benchmarking. I encourage the community to add GrimAge, DunedinPACE, and other clocks. See [benchmarks/README.md](benchmarks/README.md).
 

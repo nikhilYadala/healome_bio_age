@@ -15,7 +15,7 @@
     "test_split_method": "random 10/90 test split, random_state=3454"
   },
   "track2_survival": {
-    "concordance": 0.99,
+    "concordance": 0.81,
     "n_mortality_records": 50000,
     "km_separation": "Clear separation between accelerated (bio_age - chrono_age >= 5) and decelerated (<= -5) groups"
   }

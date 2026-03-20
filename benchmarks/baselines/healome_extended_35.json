@@ -15,7 +15,7 @@
     "test_split_method": "random 70/30 test split, random_state=3454"
   },
   "track2_survival": {
-    "concordance": 0.99,
+    "concordance": 0.83,
     "n_mortality_records": 50000,
     "km_separation": "Clear separation between accelerated and decelerated aging groups"
   }

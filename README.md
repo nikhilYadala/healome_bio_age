@@ -28,7 +28,7 @@ Starting from roughly **120 blood-related biomarkers**, we progressively dropped
 
 - **Interpretable** — Built on standard clinical biomarkers (CBC + CMP + medical history) that map to physiological systems physicians already reason about.
 - **Reproducible** — Trained entirely on open, public survey data. Anyone can retrain, validate, and audit.
-- **Validated against mortality** — Survival analysis confirms the model's biological age estimates predict mortality (Cox PH concordance = 0.99).
+- **Validated against mortality** — Survival analysis confirms the model's biological age estimates predict mortality (univariate Cox PH HR = 1.098 per year, concordance = 0.83).
 - **Extensible** — Structured for community contributions: new data sources, models, and benchmarks.
 
 ## Quick Start
@@ -149,7 +149,7 @@ CSV/JSON column names can use these same friendly keys (or the original survey c
 | **Standard** | 21 (15 lab + 6 questionnaire) | 5.11 years | 0.906 | 0.952 |
 | **Extended** | 35 (expanded lab panel) | 6.07 years | 0.873 | 0.934 |
 
-Both models: GradientBoosting trained on ~50K public survey records (2003–2020), validated with Cox PH survival analysis (concordance = 0.99).
+Both models: GradientBoosting trained on ~50K public survey records (2003–2020), validated with Cox PH survival analysis (univariate HR = 1.098 per year for extended model, concordance = 0.83).
 
 Use **standard** for routine panels (21 inputs) or **extended** when you have the larger lipid/liver/electrolyte set (35 inputs). Pass biomarkers as **canonical friendly names** (see examples above) or the original survey codes.
 
@@ -225,7 +225,7 @@ Validated against a proprietary longitudinal clinical dataset (~1.5M blood-test 
 
 The model's biological age predictions are validated against mortality outcomes using linked public mortality records:
 
-- **Cox PH Concordance: 0.99** — biological age is a strong predictor of mortality
+- **Cox PH**: Univariate HR = 1.098 per year of biological age (95% CI: 1.095–1.100), concordance = 0.83 — biological age is a strong predictor of mortality
 - **Kaplan-Meier**: Clear separation between accelerated aging (bio_age - chrono_age >= 5 years) and decelerated aging groups
 
 See [BENCHMARKS.md](BENCHMARKS.md) for full results.
@@ -279,11 +279,13 @@ Healome is a longevity-focused health technology company building blood-based ag
 ## Citation
 
 ```bibtex
-@software{healome_aging_clock,
-  author = {Nikhil Yadala},
-  title = {Interpretable, Actionable, and Clinically meaningful Biological Aging Clocks},
-  year = {2026},
-  url = {https://github.com/nikhilYadala/healome_bio_age}
+@article{yadala2026healome,
+  title={Healome Clock: An Open-Source, Interpretable, and Actionable Blood-Based Biological Aging Clock with Disease-Specific Mortality Validation},
+  author={Yadala, Nikhil},
+  journal={medRxiv},
+  year={2026},
+  doi={10.1101/2026.XX.XX.XXXXXXX},
+  url={https://doi.org/10.1101/2026.XX.XX.XXXXXXX}
 }
 ```
 
