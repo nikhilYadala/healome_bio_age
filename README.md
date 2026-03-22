@@ -167,7 +167,7 @@ clock = HealomeClock(variant="extended")
 
 ## Downloading model weights and validation data
 
-Assets live on the **Hugging Face Hub** under [Healome](https://huggingface.co/Healome). If a link below does not open, use the org page → **Models** / **Datasets** and select the matching repo.
+Assets live on the **Hugging Face Hub** under [Healome](https://huggingface.co/Healome).
 
 | Resource | Hugging Face | Local path (after download) |
 |----------|--------------|-----------------------------|
