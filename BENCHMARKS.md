@@ -4,8 +4,8 @@
 
 | Model | Features | Train MAE | Train R² | Test MAE | Test R² | Test Pearson |
 |-------|----------|-----------|----------|----------|---------|-------------|
-| **Standard (21-feat)** | 15 lab + 6 MCQ | 4.47 | 0.928 | **5.11** | **0.906** | 0.952 |
-| **Extended (35-feat)** | 26 lab + 9 MCQ | 2.32 | 0.966 | **6.07** | **0.873** | 0.934 |
+| **Standard (21-feat)** | 16 lab + 5 MCQ | 4.47 | 0.928 | **5.11** | **0.906** | 0.952 |
+| **Extended (35-feat)** | 30 lab + 5 MCQ | 2.32 | 0.966 | **6.07** | **0.873** | 0.934 |
 
 Training data: ~50,000 NHANES records (2003-2020). Test split: random, seed=3454.
 

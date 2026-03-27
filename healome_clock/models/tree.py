@@ -2,7 +2,7 @@
 Tree-based biological age model (GradientBoostingRegressor).
 
 Two variants:
-  - standard (21 features): 15 lab biomarkers + 6 MCQ questionnaire items
+  - standard (21 features): 16 lab biomarkers + 5 MCQ questionnaire items
   - extended (35 features): adds lipids, liver, hematologic markers
 
 Feature order is critical — .joblib models expect features in the exact
@@ -127,7 +127,7 @@ MODEL_CONFIGS = {
         "importance_order": STANDARD_21_IMPORTANCE_ORDER,
         "weights_file": "standard_21feat.joblib",
         "n_features": 21,
-        "description": "21-feature model (15 lab biomarkers + 6 questionnaire)",
+        "description": "21-feature model (16 lab biomarkers + 5 questionnaire)",
         "training_params": {
             "model_type": "GradientBoostingRegressor",
             "n_estimators": 4000, "max_depth": 8,

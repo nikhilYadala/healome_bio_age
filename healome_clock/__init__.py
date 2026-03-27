@@ -3,7 +3,7 @@ Healome Aging Clock — blood-based biological age estimation from standard clin
 
 Primary model: GradientBoosting trained on ~50K NHANES records (1999-2020).
 Two variants:
-  - standard: 21 features (15 lab biomarkers + 6 questionnaire items)
+  - standard: 21 features (16 lab biomarkers + 5 questionnaire items)
   - extended: 35 features (expanded lab panel + questionnaire)
 
 Usage:

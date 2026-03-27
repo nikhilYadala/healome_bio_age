@@ -146,7 +146,7 @@ CSV/JSON column names can use these same friendly keys (or the original survey c
 
 | Variant | Features | Test MAE | Test R² | Pearson r |
 |---------|----------|----------|---------|-----------|
-| **Standard** | 21 (15 lab + 6 questionnaire) | 5.11 years | 0.906 | 0.952 |
+| **Standard** | 21 (16 lab + 5 questionnaire) | 5.11 years | 0.906 | 0.952 |
 | **Extended** | 35 (expanded lab panel) | 6.07 years | 0.873 | 0.934 |
 
 Both models: GradientBoosting trained on ~50K public survey records (2003–2020), validated with Cox PH survival analysis (univariate HR = 1.098 per year for extended model, concordance = 0.83).

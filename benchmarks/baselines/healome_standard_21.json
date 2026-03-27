@@ -1,7 +1,7 @@
 {
   "model_name": "Healome Clock — Standard (21 features)",
   "authors": "Nikhil Yadala / Healome",
-  "description": "GradientBoostingRegressor with 15 lab biomarkers + 6 questionnaire items, trained on NHANES 2003-2020",
+  "description": "GradientBoostingRegressor with 16 lab biomarkers + 5 questionnaire items, trained on NHANES 2003-2020",
   "date": "2024-04-24",
   "model_type": "GradientBoostingRegressor",
   "n_features": 21,

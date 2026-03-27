@@ -21,12 +21,12 @@ The production model uses sklearn's `GradientBoostingRegressor`, trained to pred
 
 **Standard model (21 features):**
 - `n_estimators=4000, max_depth=8, min_samples_split=30, learning_rate=0.01`
-- 15 lab biomarkers + 6 medical history questionnaire items
+- 16 lab biomarkers + 5 medical history questionnaire items
 - Test MAE: 5.11 years, R²: 0.906
 
 **Extended model (35 features):**
 - `n_estimators=6000, max_depth=10, min_samples_split=30, learning_rate=0.01`
-- 26 lab biomarkers + 9 medical history items
+- 30 lab biomarkers + 5 medical history items
 - Test MAE: 6.07 years, R²: 0.873
 
 ### Experimental: Autoencoder + CNN
@@ -35,7 +35,7 @@ An experimental neural network architecture is also provided in `healome_clock/m
 
 ## Input Features
 
-### Standard Model — 21 Features (15 lab + 6 questionnaire)
+### Standard Model — 21 Features (16 lab + 5 questionnaire)
 
 | NHANES Code | Name | Unit | Category |
 |-------------|------|------|----------|
@@ -105,7 +105,7 @@ Laboratory data was merged from the Biochemistry Profile (BIOPRO) and Complete B
 | Normalization | None (raw biomarker values used directly) |
 | Outlier handling | None applied at preprocessing; model trained on full distribution |
 | Feature engineering | None; raw NHANES biomarker values used as-is |
-| Train/test split | 80/20 random split (random_state=3454) |
+| Train/test split | 70/30 random split (random_state=3454) |
 
 ## Training Procedure
 
@@ -155,8 +155,8 @@ Laboratory data was merged from the Biochemistry Profile (BIOPRO) and Complete B
 
 | Metric | Value |
 |--------|-------|
-| Cox PH Concordance | **0.99** |
-| Partial AIC | 72,174.65 |
+| Univariate Cox PH HR | **1.098 per year** (95% CI: 1.095–1.100) |
+| Concordance | **0.83** |
 
 See [BENCHMARKS.md](BENCHMARKS.md) for full performance analysis including feature importance rankings and subgroup breakdowns.
 

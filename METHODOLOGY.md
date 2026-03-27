@@ -71,7 +71,7 @@ Feature selection was performed through iterative importance-based pruning, not 
 
 4. **35-feature extended model**: The pruning plateau was reached at approximately 35 features. Below this, removing additional features caused noticeable accuracy degradation. This became the **extended model**.
 
-5. **21-feature standard model**: I continued pruning to find the minimal feature set that still maintained acceptable accuracy for practical use — not everyone has access to a comprehensive blood panel. The 21-feature model (15 lab biomarkers + 6 questionnaire items) represents this minimal viable set. It sacrifices some accuracy but can be computed from a standard CBC + basic metabolic panel + HbA1c.
+5. **21-feature standard model**: I continued pruning to find the minimal feature set that still maintained acceptable accuracy for practical use — not everyone has access to a comprehensive blood panel. The 21-feature model (16 lab biomarkers + 5 questionnaire items) represents this minimal viable set. It sacrifices some accuracy but can be computed from a standard CBC + basic metabolic panel + HbA1c.
 
 This data-driven approach — rather than manual biomarker selection — ensures that the feature set is optimized for predictive power, not just clinical intuition.
 
