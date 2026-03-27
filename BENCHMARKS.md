@@ -115,6 +115,15 @@ Univariate Cox PH models for each major CDC cause of death (UCOD_LEADING):
 | Cancer | 1,299 | 1.088 | 1.083–1.093 | < 0.005 | 0.82 |
 | Cerebrovascular disease (stroke) | 173 | 1.036 | 1.026–1.046 | < 0.005 | 0.64 |
 
+**Note on heart disease and cancer HRs:** The model includes questionnaire features that overlap with these two mortality categories: angina/CHD history (MCQ160D/MCQ160C) overlaps with heart disease mortality, and cancer history (MCQ220) overlaps with cancer mortality. To quantify the contribution of this overlap, we re-ran the analysis with all questionnaire features neutralized (set to "No" for all individuals), isolating the lab-biomarker-only signal:
+
+| Cause of Death | HR (full model) | HR (lab-only) | Effect size change |
+|----------------|-----------------|---------------|-------------------|
+| Heart disease | 1.114 | 1.107 | -6.4% |
+| Cancer | 1.088 | 1.076 | -13.3% |
+
+The lab biomarkers alone carry the majority of the mortality signal for both categories. All other disease categories in the table above have no corresponding input feature overlap.
+
 ### Kaplan-Meier Survival Curves
 
 Individuals are classified by aging rate:
