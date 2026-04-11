@@ -1,0 +1,37 @@
+cff-version: 1.2.0
+title: "OpenAge: An Open-Source, Interpretable, and Actionable Blood-Based Biological Aging Clock with Disease-Specific Mortality Validation"
+message: "If you use this software, please cite both the paper and the software."
+type: software
+authors:
+  - family-names: Yadala
+    given-names: Nikhil
+    orcid: "https://orcid.org/0000-0000-0000-0000"
+    affiliation: "Healome One"
+repository-code: "https://github.com/Healome/openage"
+url: "https://www.openageai.com"
+license: AGPL-3.0
+keywords:
+  - biological-age
+  - aging-clock
+  - blood-biomarkers
+  - mortality-prediction
+  - interpretable-ml
+  - open-source
+preferred-citation:
+  type: article
+  title: "OpenAge: An Open-Source, Interpretable, and Actionable Blood-Based Biological Aging Clock with Disease-Specific Mortality Validation"
+  authors:
+    - family-names: Yadala
+      given-names: Nikhil
+  year: 2026
+  doi: "10.5281/zenodo.19519511"
+  url: "https://doi.org/10.5281/zenodo.19519511"
+  publisher:
+    name: Zenodo
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.19519511"
+    description: "Paper"
+  - type: doi
+    value: "10.5281/zenodo.19244274"
+    description: "Software"
